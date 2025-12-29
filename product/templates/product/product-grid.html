@@ -74,8 +74,7 @@
                             <div class="d-grid gap-2">
                                 <div class="form-group">
                                     <label class="form-label d-flex" for="search-query-filter">جستو جو</label>
-                                    <input class="form-control" placeholder="واژه مورد نظر را وارد نمایید" type="text" {% if q_search %} value="{{ q_search }}" {% endif %}
-                                        name="q" id="search-query-filter">
+                                    <input class="form-control" placeholder="واژه مورد نظر را وارد نمایید" type="text" name="q" id="search-query-filter">
                                 </div>
                             </div>
                         </div>
@@ -86,12 +85,12 @@
                                 <div class="form-group">
                                     <label class="form-label d-flex" for="min-price-filter">کمترین قیمت</label>
                                     <input class="form-control" type="number" name="min_price"
-                                        placeholder="کمترین قیمت مد نظر" id="min-price-filter" {% if min_price %} value="{{ min_price }}" {% endif %}>
+                                        placeholder="کمترین قیمت مد نظر" id="min-price-filter">
                                 </div>
                                 <div class="form-group">
                                     <label class="form-label d-flex" for="max-price-filter">بیشترین قیمت</label>
                                     <input class="form-control" type="number" name="max_price"
-                                        placeholder="بیشترین قیمت مد نظر" id="max-price-filter" {% if max_price %} value="{{ max_price }}" {% endif %}>
+                                        placeholder="بیشترین قیمت مد نظر" id="max-price-filter">
                                 </div>
                             </div>
                         </div>
@@ -99,11 +98,10 @@
                             <h5>دسته بندی</h5>
                             <div class="d-grid gap-2">
                                 <div class="mb-2 mb-sm-0 me-sm-2">
-                                    <select class="form-select form-select-sm" name="category_id"
-                                        id="category-id-filter">
+                                    <select class="form-select form-select-sm" name="category_id" id="category-id-filter">
                                         <option value="" selected>انتخاب دسته بندی</option>
                                         {% for category in categories %}
-                                            <option value="{{category.id}}" {% if category.id|stringformat:"s" == category_id %} selected {% endif %}>{{category.title}}</option>
+                                            <option value="{{category.id}}">{{category.title}}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -130,45 +128,52 @@
                     </div>
 
                     <div class="col-sm-auto">
-                        <div class="d-sm-flex justify-content-sm-end align-items-center">
-                            <!-- Select -->
-                            <div class="mb-2 mb-sm-0 me-sm-2">
-                                <select class="form-select form-select-sm">
-                                    <option value="Relevance" selected>ارتباط</option>
-                                    <option value="mostRecent">اخیرا</option>
-                                </select>
-                            </div>
-                            <!-- End Select -->
-
-                            <!-- Select -->
-                            <div class="mb-2 mb-sm-0 me-sm-2">
-                                <select class="form-select form-select-sm">
-                                    <option value="alphabeticalOrderSelect1" selected>A-to-Z</option>
-                                    <option value="alphabeticalOrderSelect2">Z-to-A</option>
-                                </select>
-                            </div>
-                            <!-- End Select -->
-
-                            <!-- Nav -->
-                            <ul class="nav nav-segment">
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="{% url 'product:product-grid' %}">
-                                        <i class="bi-grid-fill"></i>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'product:product-list' %}">
-                                        <i class="bi-list"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                            <!-- End Nav -->
+                    <div class="d-sm-flex justify-content-sm-end align-items-center">
+                        <!-- Select -->
+                        <div class="mb-2 mb-sm-0 me-sm-2">
+                            <select class="form-select form-select-sm" id="order-by-filter">
+                                <option value="" selected>مرتب سازی</option>
+                                <option value="-created_date">جدیدترین</option>
+                                <option value="created_date">قدیمی ترین</option>
+                                <option value="-price">بیشترین قیمت</option>
+                                <option value="price">کمترین قیمت</option>
+                            </select>
                         </div>
+                        <!-- End Select -->
+                        <!-- Select -->
+                        <div class="mb-2 mb-sm-0 me-sm-2">
+                            <select class="form-select form-select-sm" id="page-size-filter">
+                                <option value="" selected>تعداد در صفحه</option>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                        <!-- End Select -->
+
+                        <!-- Nav -->
+                        <ul class="nav nav-segment">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{% url 'product:product-grid' %}">
+                                    <i class="bi-grid-fill"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <i class="bi-list"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- End Nav -->
                     </div>
                 </div>
+                </div>
                 <!-- End Row -->
-
+            
                 <div class="row row-cols-sm-2 row-cols-md-3 mb-10">
+                    
                     {% for product in products %}
                         <div class="col mb-4">
                             <!-- Card -->
@@ -258,7 +263,7 @@
                         <ul class="pagination justify-content-center">
                             <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
                                 {% if page_obj.has_previous %}
-                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                    <a class="page-link" href="javascript:void(0)" onclick="goToPage({{ page_obj.previous_page_number }})" aria-label="Previous">
                                       <span aria-hidden="true">
                                         <i class="bi-chevron-double-right small"></i>
                                       </span>
@@ -270,13 +275,13 @@
                                 {% if page_obj.number == num %}
                                     <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
                                 {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                    <li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="goToPage({{ num }})">{{ num }}</a></li>
                                 {% endif %}
                             {% endfor %}
 
                             <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
                                 {% if page_obj.has_next %}
-                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                    <a class="page-link" href="javascript:void(0)" onclick="goToPage({{ page_obj.next_page_number }})" aria-label="Next">
                                           <span aria-hidden="true">
                                             <i class="bi-chevron-double-left small"></i>
                                           </span>
@@ -364,4 +369,45 @@
         <!-- End Row -->
     </div>
     <!-- End Clients -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+
+    $(document).ready(function () {
+        let current_url_params = new URLSearchParams(window.location.search)
+        $("#page-size-filter").val(current_url_params.get("page_size") || "")
+        $("#order-by-filter").val(current_url_params.get("order_by") || "")
+        $("#search-query-filter").val(current_url_params.get("q") || "")
+        $("#min-price-filter").val(current_url_params.get("min_price") || "")
+        $("#max-price-filter").val(current_url_params.get("max_price") || "")
+        $("#category-id-filter").val(current_url_params.get("category_id") || "")
+
+    });
+    $('#page-size-filter').change(function () {
+        let current_url_params = new URLSearchParams(window.location.search)
+        var selectedOption = $(this).val();
+        current_url_params.set("page_size", selectedOption)
+        let new_url = window.location.pathname + "?" + current_url_params.toString()
+        window.location.href = new_url
+    });
+    $('#order-by-filter').change(function () {
+        let current_url_params = new URLSearchParams(window.location.search)
+        var selectedOption = $(this).val();
+        current_url_params.set("order_by", selectedOption)
+        let new_url = window.location.pathname + "?" + current_url_params.toString()
+        window.location.href = new_url
+    });
+
+    
+</script>
+    
+<script>
+    function goToPage(page) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', page);
+        window.location.href = url.toString();
+    }
+</script>
+
 {% endblock %}

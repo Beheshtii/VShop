@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import DetailView, ListView
+from django.core.exceptions import FieldError
 
 from product.models import *
 
@@ -10,6 +11,17 @@ class ProductGridView(ListView):
     model = Product
     context_object_name = 'products'
     paginate_by = 9
+
+    def get_paginate_by(self, queryset):
+        page_size = self.request.GET.get('page_size', self.paginate_by)
+        try:
+            if int(page_size) > 5:
+                page_size = 5
+        except ValueError:
+            page_size = self.paginate_by
+
+        return page_size
+
 
     def get_queryset(self, **kwargs):
         query = super().get_queryset()
@@ -35,6 +47,13 @@ class ProductGridView(ListView):
         if category_id:
             query = query.filter(category__id=category_id)
 
+        order_by = self.request.GET.get('order_by')
+        if order_by:
+            try:
+                query = query.order_by(order_by)
+            except FieldError:
+                pass
+
 
         return query
 
@@ -42,24 +61,6 @@ class ProductGridView(ListView):
         context = super().get_context_data(**kwargs)
         context['total_items'] = self.get_queryset().count()
         context['categories'] = ProductCategory.objects.all()
-
-        # Query Search
-        q_search = self.request.GET.get('q')
-
-        # Min Price
-        min_price = self.request.GET.get('min_price')
-
-        # Max Price
-        max_price = self.request.GET.get('max_price')
-
-        category_id = self.request.GET.get('category_id')
-
-        context['q_search'] = q_search
-        context['min_price'] = min_price
-        context['max_price'] = max_price
-        context['category_id'] = category_id
-
-
 
         return context
 
