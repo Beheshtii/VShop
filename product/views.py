@@ -15,8 +15,8 @@ class ProductGridView(ListView):
     def get_paginate_by(self, queryset):
         page_size = self.request.GET.get('page_size', self.paginate_by)
         try:
-            if int(page_size) > 5:
-                page_size = 5
+            if int(page_size) > 50:
+                page_size = 50
         except ValueError:
             page_size = self.paginate_by
 
