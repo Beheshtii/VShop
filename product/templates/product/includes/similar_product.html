@@ -1,0 +1,14 @@
+<!-- Card Grid -->
+<div class="container content-space-2 content-space-lg-3">
+    <!-- Title -->
+    <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
+        <h2>محصولات مرتبط</h2>
+    </div>
+    <!-- End Title -->
+
+    <div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+        {% include 'product/includes/product_list.html' with products=similar_products %}
+    </div>
+    <!-- End Row -->
+</div>
+<!-- End Card Grid -->

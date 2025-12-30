@@ -1,0 +1,86 @@
+{% load static %}
+{% load poll_extras %}
+
+{% for product in products %}
+    <div class="col mb-4">
+        <!-- Card -->
+        <div class="card card-bordered shadow-none text-center h-100">
+            <div class="card-pinned">
+                <img class="card-img-top" src="{{ product.image.url }}" width="300" height="180"
+                     alt="Image Description">
+
+                {% if product.discount_percent %}
+                    <div class="card-pinned-top-start">
+                        <span class="badge bg-danger rounded-pill">{{ product.discount_percent }}% تخفیف</span>
+                    </div>
+                {% endif %} 
+
+                <div class="card-pinned-top-end">
+                    <button type="button"
+                            class="btn btn-outline-secondary btn-xs btn-icon rounded-circle"
+                            data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="افزودن به علایق">
+                        <i class="bi-heart"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="mb-2">
+                    {% for category in product.category.all %}
+                        <a class="link-sm link-secondary" href="#"> {{ category.title }} </a>
+                        {% if not forloop.last %}
+                            ,
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <h4 class="card-title">
+                    <a class="text-dark" href="{% url 'product:product-detail' pk=product.pk %}">{{ product.title }}</a>
+                </h4>
+                <!-- Price -->
+                {% if product.discount_percent %}
+                    <p class="card-text text-dark fs-4">
+                        <span class="formatted-price">{{ product.get_real_price|three_digits_currency }}</span>
+                        <span class="text-body me-1 fs-6 formatted-price text-decoration-line-through">{{ product.get_raw_price|three_digits_currency }}</span>
+                    </p>
+                {% else %}
+                    <p class="card-text text-dark fs-4 formatted-price"> {{ product.get_raw_price|three_digits_currency }}</p>
+                {% endif %}
+                <!-- End Price -->
+                
+            </div>
+
+            <div class="card-footer pt-0">
+                <!-- Rating -->
+                <a class="d-inline-flex align-items-center mb-3" href="#">
+                    <div class="d-flex gap-1 ms-2">
+                        <img src="{% static '/svg/illustrations/star-muted.svg' %}"
+                             alt="Review rating" width="16">
+                        <img src="{% static '/svg/illustrations/star-muted.svg' %}"
+                             alt="Review rating" width="16">
+                        <img src="{% static '/svg/illustrations/star-muted.svg' %}"
+                             alt="Review rating" width="16">
+                        <img src="{% static '/svg/illustrations/star-muted.svg' %}"
+                             alt="Review rating" width="16">
+                        <img src="{% static '/svg/illustrations/star-muted.svg' %}"
+                             alt="Review rating" width="16">
+                    </div>
+                    <span class="small">0</span>
+                </a>
+                <!-- End Rating -->
+
+                <button type="button"
+                        class="btn btn-outline-primary btn-sm btn-transition rounded-pill">افزودن به
+                    سبد خرید
+                </button>
+            </div>
+        </div>
+        <!-- End Card -->
+    </div>
+    <!-- End Col -->
+{% empty %}
+    <div class="row text-center w-100 py-5">
+        <p class="text-center">هیچ کالایی برای نمایش وجود ندارد</p>
+    </div>
+{% endfor %}
