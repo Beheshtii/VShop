@@ -12,6 +12,9 @@ class CartSession:
 
 
     def add_product(self, product_id):
+        if product_id is None:
+            return
+
         for item in self._cart['items']:
             if item['product_id'] == product_id:
                 item['quantity'] += 1
@@ -35,5 +38,10 @@ class CartSession:
         }
         self.save()
 
+    def get_cart(self):
+        return self._cart
+
     def save(self):
         self.session.modified = True
+
+
