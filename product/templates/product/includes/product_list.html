@@ -1,13 +1,15 @@
 {% load static %}
 {% load poll_extras %}
+{% load thumbnail %}
 
 {% for product in products %}
     <div class="col mb-4">
         <!-- Card -->
         <div class="card card-bordered shadow-none text-center h-100">
             <div class="card-pinned">
-                <img class="card-img-top" src="{{ product.image.url }}" width="300" height="180"
-                     alt="Image Description">
+                {% thumbnail product.image "300x200" crop="center" as img %}
+                    <img src="{{ img.url }}" class="card-img-top" alt="{{ product.title }}">
+                {% endthumbnail %}
 
                 {% if product.discount_percent %}
                     <div class="card-pinned-top-start">
